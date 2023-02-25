@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS User (
   password char(128) NOT NULL,
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL,
-  role int DEFAULT 0,
+  role int DEFAULT 0 NOT NULL,
   profile_image varchar(100) DEFAULT 'empty-profile' NOT NULL,
   verified tinyint(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
@@ -73,3 +73,5 @@ CREATE TABLE IF NOT EXISTS User_Favorite (
   CONSTRAINT fk_recipe_favorite
     FOREIGN KEY (recipe_id) REFERENCES Recipe (id) ON DELETE CASCADE ON UPDATE CASCADE 
 );
+
+

@@ -11,7 +11,7 @@ def run_migration():
 
     username = os.getenv('DB_USER')
     password = os.getenv('DB_PASSWORD')
-    default_filename = 'frlocal.sql'
+    default_filename = 'fr-schema.sql'
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--source", help = "file to source", required = False, default = default_filename)
