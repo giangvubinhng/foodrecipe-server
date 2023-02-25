@@ -4,9 +4,9 @@ CREATE TABLE IF NOT EXISTS User (
   password char(128) NOT NULL,
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL,
-  role int DEFAULT NULL,
-  profile_image varchar(100) NOT NULL,
-  verified tinyint(1) NOT NULL,
+  role int DEFAULT 0,
+  profile_image varchar(100) DEFAULT 'empty-profile' NOT NULL,
+  verified tinyint(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (email)
 ); 
