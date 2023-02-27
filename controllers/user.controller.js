@@ -25,7 +25,17 @@ async function verify(req, res){
 }
 
 async function logout(req, res){
-
+	if (req.cookies.access_token) {
+		res.clearCookie("access_token").status(200).json({
+			success: true,
+			message: "You have logged out",
+		});
+	} else {
+		res.status(403).json({
+			success: false,
+			message: "Unable to process request",
+		});
+	}
 }
 
 async function changePassword(req, res){
