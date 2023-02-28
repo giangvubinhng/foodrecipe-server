@@ -86,7 +86,6 @@ async function login(userLoginRequestObject) {
     }
     else{
       const foundUser = found.data[0];
-      console.log(foundUser)
       const correctPassword = await bcrypt.compare(password, foundUser.password);
       if(!correctPassword){
         response = {
