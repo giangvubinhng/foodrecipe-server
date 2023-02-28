@@ -1,6 +1,6 @@
 var express = require('express');
+var middleware = require('../middlewares/auth');
 var router = express.Router();
-var pool = require('../models/db');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

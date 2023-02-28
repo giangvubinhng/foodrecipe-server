@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken')
 const userAccessor = require('../accessors/user.accessor');
 
-export async function authenticate(req, res, next) {
+async function authenticate(req, res, next) {
 
   const secret = process.env.FR_JWT_TOKEN || 'someSecretToLogin';
   if(!(req.cookies && req.cookies.access_token)){
     return res.status(401).json({
       success: false,
-      messasge: "Invalid request"
+      messasge: "Not Authorized"
     });
   }
   try{
@@ -24,7 +24,7 @@ export async function authenticate(req, res, next) {
     if(found.data.length < 1){
       return res.status(401).json({
         success: false,
-        messasge: "Invalid request"
+        messasge: "Not Authorized"
       });
     }
     const user = found.data[0];
@@ -33,22 +33,27 @@ export async function authenticate(req, res, next) {
   }catch(e){
       return res.status(401).json({
         success: false,
-        messasge: "Invalid request"
+        messasge: "Not Authorized"
       });
   }
 
 }
 
-export async function authorizeAdmin(req, res, next){
+async function authorizeAdmin(req, res, next){
+  authenticate(req, res, function (){
+    const user = req.user
+    if(!user || user.role !== 1){
+      return res.status(403).json({
+        success: false,
+        messasge: "Forbidden"
+      });
+    }
+    next()
+  })
+}
 
-  await authenticate(req, res, next)
-  const user = req.user
-  if(!user || user.role !== 1){
-    return res.status(403).json({
-      success: false,
-      messasge: "Unauthorized request"
-    });
-  }
-  next()
 
+module.exports = {
+  authenticate,
+  authorizeAdmin
 }
