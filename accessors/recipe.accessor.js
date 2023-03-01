@@ -16,6 +16,7 @@ var db = require('../models/db');
 const QUERIES = Object.freeze({
   getPublicCount: `SELECT COUNT(*) as itemsCount from Recipe Where is_public = 1`,
   getPublicRecipes: `SELECT * from Recipe Where is_public = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  insertRecipe: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`
 })
 
 async function getPublicRecipesCount(){
@@ -72,8 +73,41 @@ async function getPublicRecipes(limit, offset){
     if (connection) connection.end();
   }
 }
+
+async function insertRecipe(newRecipe){
+  let connection;
+  let response;
+  try{
+    const {name, cuisine, instruction, user} = newRecipe
+    const userId = user.id
+    connection = await db.getConnection();
+    const result = await connection.query(QUERIES.insertRecipe, [name, cuisine, instruction, userId])
+    console.log(result)
+
+    response = {
+      success: true,
+      data: result,
+      message: "Operation Succeeded"
+    }
+    return response;
+  }
+  catch(e){
+    console.error(e)
+    response = {
+      success: false,
+      message: e
+    }
+    return response;
+
+  }
+  finally{
+    if (connection) connection.end();
+  }
+
+}
 module.exports = {
   getPublicRecipesCount,
-  getPublicRecipes
+  getPublicRecipes,
+  insertRecipe
 
 }

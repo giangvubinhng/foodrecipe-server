@@ -11,6 +11,14 @@ async function getPublicRecipes(req, res){
 
 }
 
+async function createRecipe(req, res) {
+  const createRecipeRequestObject = req.body;
+  createRecipeRequestObject["user"] = req.user;
+  const action = await recipeService.createRecipe(createRecipeRequestObject);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
-  getPublicRecipes
+  getPublicRecipes,
+  createRecipe
 }

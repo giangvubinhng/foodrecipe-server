@@ -1,5 +1,7 @@
 const { response } = require('express');
 const recipeAccessor = require('../accessors/recipe.accessor');
+const ingredientAccessor = require('../accessors/ingredient.accessor');
+const ingredientRecipeJunctionAccessor = require('../accessors/ingredient_recipe_junction.accessor')
 
 
 
@@ -51,10 +53,62 @@ async function getPublicRecipes(publicRecipesRequestObject){
   }
 }
 
+async function createRecipe(createRecipeRequestObject) {
+  const recipeAction = await recipeAccessor.insertRecipe(createRecipeRequestObject)
+  if(!recipeAction.success){
+    return {
+      result: {
+        success: false,
+        message: "An error has occurred, please try again later",
+      },
+      status: 500,
+    }
+  }
+  const recipeId = Number(recipeAction.data.insertId)
+
+  const ingredientList = createRecipeRequestObject.ingredients;
+
+  for (const ingredient of ingredientList){
+    const ingredientAction = await ingredientAccessor.insertIngredient(ingredient);
+    if(!ingredientAction.success){
+      return {
+        result: {
+          success: false,
+          message: "An error has occurred, please try again later",
+        },
+        status: 500,
+      }
+    }
+    
+    const ingredientId = Number(ingredientAction.data.insertId)
+    const result = await ingredientRecipeJunctionAccessor.insert(ingredientId, recipeId)
+
+    if(!result.success){
+      return {
+        result: {
+          success: false,
+          message: "An error has occurred, please try again later",
+        },
+        status: 500,
+      }
+    }
+  }
+  return {
+    result: {
+      success: true,
+      data: recipeId,
+      message: "Public recipe retrieved successfully",
+    },
+    status: 200
+  }
+}
+
 module.exports = {
-  getPublicRecipes
+  getPublicRecipes,
+  createRecipe
 }
 
 
 
 
+ 
