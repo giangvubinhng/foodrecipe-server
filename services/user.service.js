@@ -59,6 +59,7 @@ async function register(userRegisterRequestObject){
   }
   return response;
 }
+
 module.exports = {
   register
 }
