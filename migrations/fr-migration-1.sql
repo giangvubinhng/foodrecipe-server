@@ -1,0 +1,5 @@
+ALTER TABLE Recipe 
+  ALTER is_public SET DEFAULT 0;
+
+ALTER TABLE User
+  DROP COLUMN verified;

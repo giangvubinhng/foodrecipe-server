@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var pool = require('../models/db');
+const express = require('express');
+const middleware = require('../middlewares/auth');
+const router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
