@@ -103,9 +103,33 @@ async function createRecipe(createRecipeRequestObject) {
   }
 }
 
+async function deleteRecipe(id) {
+  console.log(id)
+  const recipeId = parseInt(id);
+  const result = await recipeAccessor.deleteRecipe(recipeId);
+  if (!result.success) {
+    return {
+      result: {
+        success: false,
+        message: "An error has occurred, please try again later",
+      },
+      status: 500,
+    }
+  }
+  return {
+    result: {
+      success: true,
+      data: recipeId,
+      message: "Deleted successfully",
+    },
+    status: 200
+  }
+}
+
 module.exports = {
   getPublicRecipes,
-  createRecipe
+  createRecipe,
+  deleteRecipe
 }
 
 

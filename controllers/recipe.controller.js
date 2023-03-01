@@ -18,7 +18,15 @@ async function createRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
+//DELETE 
+async function deleteRecipe(req, res) {
+  const recipeId = req.params.id;
+  const action = await recipeService.deleteRecipe(recipeId);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
   getPublicRecipes,
-  createRecipe
+  createRecipe,
+  deleteRecipe
 }
