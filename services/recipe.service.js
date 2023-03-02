@@ -2,6 +2,7 @@ const ResponseObject = require('../helpers/ResponseHandler');
 const recipeAccessor = require('../accessors/recipe.accessor');
 const ingredientAccessor = require('../accessors/ingredient.accessor');
 const ingredientRecipeJunctionAccessor = require('../accessors/ingredient_recipe_junction.accessor')
+const {executeTransaction} = require("../models/db");
 
 
 
@@ -39,20 +40,22 @@ async function getPublicRecipes(publicRecipesRequestObject){
 
 async function createRecipe(createRecipeRequestObject){
 
-  const {name, cuisine, instruction, ingredients, user} = createRecipeRequestObject
-
   try{
-    const recipeAction = await recipeAccessor.insert(name, cuisine, instruction, user.id);
-    const recipeId = Number(recipeAction.insertId)
+    const transactionLogic = async () => {
+      const {name, cuisine, instruction, ingredients, user} = createRecipeRequestObject
+      const recipeAction = await recipeAccessor.insert(name, cuisine, instruction, user.id);
+      const recipeId = Number(recipeAction.insertId)
 
-    for (const ingr of ingredients){
-      const ingredient = ingr.toLowerCase();
-      const ingredientAction = await ingredientAccessor.insert(ingredient);
-      const ingredientId = Number(ingredientAction.insertId)
+      for (const ingr of ingredients){
+        const ingredient = ingr.toLowerCase();
+        const ingredientAction = await ingredientAccessor.insert(ingredient);
+        const ingredientId = Number(ingredientAction.insertId)
 
-      await ingredientRecipeJunctionAccessor.insert(ingredientId, recipeId)
+        await ingredientRecipeJunctionAccessor.insert(ingredientId, recipeId)
+      }
+      return ResponseObject(200, "Recipe created successfully", {recipeId});
     }
-    return ResponseObject(200, "Recipe created successfully", {recipeId});
+    return await executeTransaction(transactionLogic);
 
   }
   catch(e){
