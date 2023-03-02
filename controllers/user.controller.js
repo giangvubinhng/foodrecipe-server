@@ -1,3 +1,4 @@
+const { executeTransaction } = require('../models/db');
 const userService = require('../services/user.service');
 
 async function register(req, res){
@@ -50,6 +51,20 @@ async function getCurrentUser(req, res){
 
 }
 
+// adds an entry containing user_id and recipe_id to the user_favorite table
+// for reference- req:{"userId": #, "recipeId":#}
+async function addFavRecipe(req, res){
+  var sql_cmd = "INSERT INTO user_favorite (user_id, recipe_id) VALUES (" + req["userId"] + ", " + req["recipeId"] + ");"
+  executeTransaction(sql_cmd, 0)
+}
+
+// deletes an entry containing user_id and recipe_id from the user_favorite table
+// for reference- req:{"userId": #, "recipeId":#}
+async function delFavRecipe(req, res){
+  var sql_cmd = "DELETE FROM user_favorite WHERE user_id = " + req["userId"] + " AND recipe_id = " + req["recipeId"] + ";"
+  executeTransaction(sql_cmd, 0)
+}
+
 module.exports = {
   register,
   login,
@@ -57,7 +72,9 @@ module.exports = {
   changePassword,
   sendForgotPasswordEmail,
   resetPassword,
-  getCurrentUser
+  getCurrentUser,
+  addFavRecipe,
+  delFavRecipe
 }
 
 

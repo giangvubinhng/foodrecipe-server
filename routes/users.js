@@ -10,5 +10,7 @@ router.post("/current-user", userController.getCurrentUser);
 router.post("/change-password", userController.changePassword);
 router.post("/reset-password/:token", userController.resetPassword)
 router.post("/send-reset-password-email", userController.sendForgotPasswordEmail)
+router.post("/add-favorite-recipe/users/:userId/recipes/recipeId", userController.addFavRecipe)
+router.post("/delete-favorite-recipe/users/:userId/recipes/recipeId", userController.delFavRecipe)
 
 module.exports = router;
