@@ -12,15 +12,11 @@ async function login(req, res){
   if(action.status !== 200){
     return res.status(action.status).json(action.result)
   }
-  return res.cookie("access_token", action.result.data, {
+  return res.cookie("access_token", action.result.data.token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   }).status(action.status).json(action.result)
 
-
-}
-
-async function verify(req, res){
 
 }
 
@@ -57,7 +53,6 @@ async function getCurrentUser(req, res){
 module.exports = {
   register,
   login,
-  verify,
   logout,
   changePassword,
   sendForgotPasswordEmail,

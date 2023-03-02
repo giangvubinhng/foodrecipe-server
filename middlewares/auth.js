@@ -14,23 +14,28 @@ async function authenticate(req, res, next) {
 		const token = req.cookies.access_token;
     const decoded = jwt.verify(token, secret);
     const email = decoded.email;
-    const found = await userAccessor.findByEmail(email);
-    if(!found.success){
+    try{
+      const found = await userAccessor.findByEmail(email);
+
+      if(found.length < 1)
+        return res.status(401).json({
+          success: false,
+          messasge: "Not Authorized"
+        });
+
+      const user = found[0];
+      req.user = user;
+      next();
+    }
+    catch(e){
+      console.log(e)
       return res.status(500).json({
         success: false,
         messasge: "An internal error occurred"
       });
     }
-    if(found.data.length < 1){
-      return res.status(401).json({
-        success: false,
-        messasge: "Not Authorized"
-      });
-    }
-    const user = found.data[0];
-    req.user = user;
-    next();
   }catch(e){
+      console.log(e)
       return res.status(401).json({
         success: false,
         messasge: "Not Authorized"
