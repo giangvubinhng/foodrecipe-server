@@ -21,7 +21,8 @@ async function createRecipe(req, res) {
 //DELETE 
 async function deleteRecipe(req, res) {
   const recipeId = req.params.id;
-  const action = await recipeService.deleteRecipe(recipeId);
+  const user = req.user;
+  const action = await recipeService.deleteRecipe(recipeId, user);
   return res.status(action.status).json(action.result);
 }
 

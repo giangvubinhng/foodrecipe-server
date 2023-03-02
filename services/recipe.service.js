@@ -103,10 +103,10 @@ async function createRecipe(createRecipeRequestObject) {
   }
 }
 
-async function deleteRecipe(id) {
+async function deleteRecipe(id, user) {
   console.log(id)
   const recipeId = parseInt(id);
-  const result = await recipeAccessor.deleteRecipe(recipeId);
+  const result = await recipeAccessor.deleteRecipe(recipeId, user);
   if (!result.success) {
     return {
       result: {
