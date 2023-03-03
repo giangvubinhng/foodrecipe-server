@@ -24,7 +24,15 @@ async function test(req, res){
   return res.status(action.status).json(action.result);
 }
 
+async function deleteRecipe(req, res) {
+  const recipeId = req.params.id;
+  const user = req.user;
+  const action = await recipeService.deleteRecipe(recipeId, user);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
   getPublicRecipes,
-  createRecipe
+  createRecipe,
+  deleteRecipe
 }

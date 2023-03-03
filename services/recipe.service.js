@@ -64,9 +64,30 @@ async function createRecipe(createRecipeRequestObject){
   }
 }
 
+async function deleteRecipe(id, user) {
+  const recipeId = parseInt(id);
+  try {
+    const recipes = await recipeAccessor.findById(recipeId);
+    if (recipes.length < 1) {
+      return ResponseObject(400);
+    }
+    const recipe = recipes[0];
+    if (!(user.role === 1 || recipe.user_id === Number(user.id))){
+      return ResponseObject(400);
+    } 
+    const result = await recipeAccessor.deleteRecipe(recipeId);
+    return ResponseObject(200);
+  }
+  catch (e) {
+    console.log(e);
+    return ResponseObject(500);
+  }
+}
+
 module.exports = {
   getPublicRecipes,
-  createRecipe
+  createRecipe,
+  deleteRecipe
 }
 
 
