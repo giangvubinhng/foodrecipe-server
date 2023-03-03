@@ -17,7 +17,8 @@ const QUERIES = Object.freeze({
   getPublicCount: `SELECT COUNT(*) as itemsCount from Recipe Where is_public = 1`,
   getPublicRecipes: `SELECT * from Recipe Where is_public = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   insertRecipe: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
-  deleteRecipe: `DELETE FROM Recipe WHERE id = ? AND user_id = ?`
+  deleteRecipe: `DELETE FROM Recipe WHERE id = ? AND user_id = ?`,
+  adminDelete:  `DELETE FROM Recipe WHERE id = ?`
 })
 
 async function getPublicRecipesCount(){
@@ -83,7 +84,7 @@ async function insertRecipe(newRecipe){
     const userId = user.id
     connection = await db.getConnection();
     const result = await connection.query(QUERIES.insertRecipe, [name, cuisine, instruction, userId])
-    console.log(result)
+    
 
     response = {
       success: true,
@@ -113,8 +114,13 @@ async function deleteRecipe(reId, user) {
   try{
     const userId = user.id
     connection = await db.getConnection();
-    const result = await connection.query(QUERIES.deleteRecipe, [reId, userId])
-
+    let result;
+    if (user.role == 1) {
+      result = await connection.query(QUERIES.adminDelete, [reId])
+    }
+    else {
+      result = await connection.query(QUERIES.deleteRecipe, [reId, userId])
+    }
     response = {
       success: true,
       data: result,
