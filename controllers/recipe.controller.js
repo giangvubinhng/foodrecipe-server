@@ -18,11 +18,9 @@ async function createRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
-//DELETE 
-async function deleteRecipe(req, res) {
-  const recipeId = req.params.id;
-  const user = req.user;
-  const action = await recipeService.deleteRecipe(recipeId, user);
+async function test(req, res){
+  const recipeId = req.body.recipeId;
+  const action = await recipeService.requestApproval(recipeId);
   return res.status(action.status).json(action.result);
 }
 
