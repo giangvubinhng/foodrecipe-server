@@ -7,6 +7,7 @@ async function register(req, res){
 }
 
 async function login(req, res){
+
   const userLoginRequestObject = req.body;
   const action = await userService.login(userLoginRequestObject);
   if(action.status !== 200){

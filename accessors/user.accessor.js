@@ -22,7 +22,7 @@ async function findByEmail(email){
 }
 
 async function insert(email, hashPassword, firstName, lastName) {
-  return await connection.query(QUERIES.insert, 
+  return await db.executeQuery(QUERIES.insert, 
     [email, hashPassword,
       firstName, lastName]);
 }

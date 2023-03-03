@@ -18,6 +18,12 @@ async function createRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
+async function test(req, res){
+  const recipeId = req.body.recipeId;
+  const action = await recipeService.requestApproval(recipeId);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe
