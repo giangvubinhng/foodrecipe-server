@@ -65,25 +65,22 @@ async function createRecipe(createRecipeRequestObject){
 }
 
 async function deleteRecipe(id, user) {
-  console.log(id)
   const recipeId = parseInt(id);
-  const result = await recipeAccessor.deleteRecipe(recipeId, user);
-  if (!result.success) {
-    return {
-      result: {
-        success: false,
-        message: "An error has occurred, please try again later",
-      },
-      status: 500,
+  try {
+    const recipes = await recipeAccessor.findById(recipeId);
+    if (recipes.length < 1) {
+      return ResponseObject(400);
     }
+    const recipe = recipes[0];
+    if (!(user.role === 1 || recipe.user_id === Number(user.id))){
+      return ResponseObject(400);
+    } 
+    const result = await recipeAccessor.deleteRecipe(recipeId);
+    return ResponseObject(200);
   }
-  return {
-    result: {
-      success: true,
-      data: recipeId,
-      message: "Deleted successfully",
-    },
-    status: 200
+  catch (e) {
+    console.log(e);
+    return ResponseObject(500);
   }
 }
 
