@@ -14,8 +14,8 @@ var db = require('../models/db');
       FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE
   */
 const QUERIES = Object.freeze({
-  countPublic: `SELECT COUNT(*) as itemsCount from Recipe Where is_public = 1`,
-  publicRecipes: `SELECT * from Recipe Where is_public = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  countPublic: `SELECT COUNT(*) as itemsCount from Recipe Where is_public = 2`,
+  publicRecipes: `SELECT * from Recipe Where is_public = 2 ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   insert: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
   delete: `DELETE FROM Recipe WHERE id = ?`,
   findbyid: `SELECT * FROM Recipe WHERE id = ?`

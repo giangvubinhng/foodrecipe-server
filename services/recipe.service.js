@@ -11,7 +11,10 @@ const ITEMS_PER_PAGE = 20;
 
 async function getPublicRecipes(publicRecipesRequestObject){
 
-  const {page} = publicRecipesRequestObject;
+  let {page} = publicRecipesRequestObject;
+
+  if(page < 1)
+    page = 1
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
   try{
@@ -22,7 +25,7 @@ async function getPublicRecipes(publicRecipesRequestObject){
     const [countRes, items] = await Promise.all([countPromise, itemsPromise]);
     const count = Number(countRes[0].itemsCount);
     
-    const pageCount = count / ITEMS_PER_PAGE;
+    const pageCount = Math.ceil(count / ITEMS_PER_PAGE);
     const data = {
       pagination: {
         count,
