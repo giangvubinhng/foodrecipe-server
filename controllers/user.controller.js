@@ -15,7 +15,6 @@ async function login(req, res){
   }
   return res.cookie("access_token", action.result.data.token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
   }).status(action.status).json(action.result)
 
 
@@ -49,7 +48,23 @@ async function resetPassword(req, res){
 
 async function getCurrentUser(req, res){
 
+  if(!(req.cookies && req.cookies.access_token))
+    return res.status(200).json({
+      success: true,
+      data: {
+        user: {
+          isLoggedIn: false,
+        }
+      }
+    });
+
+  const action = await userService.currentUser(req.cookies.access_token);
+  return res.status(action.status).json(action.result);
+
+
+
 }
+
 
 module.exports = {
   register,

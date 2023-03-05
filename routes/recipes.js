@@ -6,9 +6,8 @@ const router = express.Router();
 
 
 router.get('/', recipeController.getPublicRecipes);
-router.post('/create-recipe', middleware.authenticate ,recipeController.createRecipe);
-//DELETE
-router.delete('/delete-recipe/:id', middleware.authenticate ,recipeController.deleteRecipe);
+router.post('/', middleware.authenticate ,recipeController.createRecipe);
+router.delete('/:id', middleware.authenticate ,recipeController.deleteRecipe);
 
 
 module.exports = router;
