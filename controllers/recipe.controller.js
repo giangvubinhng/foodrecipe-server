@@ -1,7 +1,7 @@
 const recipeService = require('../services/recipe.service');
 
 
-async function getPublicRecipes(req, res){
+async function getPublicRecipes(req, res) {
 
   const publicRecipeRequestObject = {
     page: req.query.page || 1
@@ -18,7 +18,7 @@ async function createRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
-async function test(req, res){
+async function test(req, res) {
   const recipeId = req.body.recipeId;
   const action = await recipeService.requestApproval(recipeId);
   return res.status(action.status).json(action.result);
@@ -31,8 +31,15 @@ async function deleteRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
+async function searchRecipe(req, res) {
+  const recipeName = req.query.name;
+  const action = await recipeService.searchRecipeByName(recipeName);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
-  deleteRecipe
+  deleteRecipe,
+  searchRecipe
 }

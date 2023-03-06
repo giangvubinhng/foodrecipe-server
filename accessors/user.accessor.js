@@ -17,12 +17,12 @@ const QUERIES = Object.freeze({
   findByEmail: `SELECT * FROM User WHERE email = ?`
 })
 
-async function findByEmail(email){
-    return await db.executeQuery(QUERIES.findByEmail, [email])
+async function findByEmail(email) {
+  return await db.executeQuery(QUERIES.findByEmail, [email])
 }
 
 async function insert(email, hashPassword, firstName, lastName) {
-  return await db.executeQuery(QUERIES.insert, 
+  return await db.executeQuery(QUERIES.insert,
     [email, hashPassword,
       firstName, lastName]);
 }

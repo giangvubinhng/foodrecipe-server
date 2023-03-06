@@ -6,11 +6,11 @@ const router = express.Router();
 
 
 router.get('/', recipeController.getPublicRecipes);
-router.post('/create-recipe', middleware.authenticate ,recipeController.createRecipe);
+router.post('/create-recipe', middleware.authenticate, recipeController.createRecipe);
 //DELETE
-router.delete('/delete-recipe/:id', middleware.authenticate ,recipeController.deleteRecipe);
+router.delete('/delete-recipe/:id', middleware.authenticate, recipeController.deleteRecipe);
 
-
+router.get('/search-recipe', recipeController.searchRecipe);
 module.exports = router;
 
 

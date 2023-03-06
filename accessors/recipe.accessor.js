@@ -18,28 +18,33 @@ const QUERIES = Object.freeze({
   publicRecipes: `SELECT * from Recipe Where is_public = 2 ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   insert: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
   delete: `DELETE FROM Recipe WHERE id = ?`,
-  findbyid: `SELECT * FROM Recipe WHERE id = ?`
+  findbyid: `SELECT * FROM Recipe WHERE id = ?`,
+  findByName: `SELECT * FROM Recipe WHERE name LIKE ?`
 })
 
-async function countPublic(){
+async function countPublic() {
   return await db.executeQuery(QUERIES.countPublic);
 }
 
-async function getPublicRecipes(limit, offset){
+async function getPublicRecipes(limit, offset) {
   return await db.executeQuery(QUERIES.publicRecipes, [limit, offset]);
 }
 
-async function insert(name, cuisine, instruction, userId){
+async function insert(name, cuisine, instruction, userId) {
   return await db.executeQuery(QUERIES.insert, [name, cuisine, instruction, userId])
 }
 
 //findbyid function -> take recipeId 
-async function findById(recipeId){
+async function findById(recipeId) {
   return await db.executeQuery(QUERIES.findbyid, [recipeId])
 }
 
-async function deleteRecipe(recipeId){
+async function deleteRecipe(recipeId) {
   return await db.executeQuery(QUERIES.delete, [recipeId])
+}
+
+async function findByName(name) {
+  return await db.executeQuery(QUERIES.findByName, [name]);
 }
 
 module.exports = {
@@ -47,5 +52,6 @@ module.exports = {
   getPublicRecipes,
   insert,
   deleteRecipe,
-  findById
+  findById,
+  findByName
 }
