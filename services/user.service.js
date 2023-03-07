@@ -53,46 +53,8 @@ async function login(userLoginRequestObject){
   }
 
 }
-async function currentUser(token){
-  let initialUserObject = {
-    user:  {
-      isLoggedIn: false
-    }
-  }
-  try{
-    const secret = process.env.FR_JWT_TOKEN || 'someSecretToLogin';
-    const decoded = jwt.verify(token, secret);
-    const email = decoded.email;
-    try{
-      const found = await userAccessor.findByEmail(email);
-
-      if(found.length < 1)
-        return ResponseObject(200, undefined, initialUserObject)
-
-      const user = found[0];
-      return ResponseObject(200, undefined, {user: {
-        isLoggedIn: true,
-        email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name
-
-      }})
-    }
-    catch(e){
-      console.log(e)
-      return res.status(500).json({
-        success: false,
-        messasge: "An internal error occurred"
-      });
-    }
-  }catch(e){
-      console.log(e)
-      return ResponseObject(200, undefined, initialUserObject)
-  }
-}
 
 module.exports = {
   register,
   login,
-  currentUser
 }
