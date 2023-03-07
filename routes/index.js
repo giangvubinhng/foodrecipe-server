@@ -1,5 +1,4 @@
 const express = require('express');
-const middleware = require('../middlewares/auth');
 const router = express.Router();
 
 /* GET home page. */

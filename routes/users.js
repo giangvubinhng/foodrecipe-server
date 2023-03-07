@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
+const middleware = require('../middlewares/auth')
 
 /* GET users listing. */
 router.post("/register", userController.register);
 router.post("/login", userController.login);
-router.post("/logout", userController.logout);
-router.get("/verify/:token", userController.verify);
-router.post("/current-user", userController.getCurrentUser);
-router.post("/change-password", userController.changePassword);
-router.post("/reset-password/:token", userController.resetPassword)
-router.post("/send-reset-password-email", userController.sendForgotPasswordEmail)
+router.post("/logout", middleware.authenticate, userController.logout);
+router.get("/me", middleware.currentUser, userController.getCurrentUser);
 
 module.exports = router;
