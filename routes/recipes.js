@@ -11,6 +11,7 @@ router.post('/create-recipe', middleware.authenticate, recipeController.createRe
 router.delete('/delete-recipe/:id', middleware.authenticate, recipeController.deleteRecipe);
 
 router.get('/search-recipe', recipeController.searchRecipe);
+router.get('/filter-recipe', recipeController.filterRecipeByRecipe);
 module.exports = router;
 
 

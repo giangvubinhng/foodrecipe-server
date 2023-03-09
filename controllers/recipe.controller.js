@@ -37,9 +37,16 @@ async function searchRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
+async function filterRecipeByRecipe(req, res) {
+  const ingredients = req.query.ingredients;
+  const action = await recipeService.filterRecipeByRecipe(ingredients);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
   deleteRecipe,
-  searchRecipe
+  searchRecipe,
+  filterRecipeByRecipe
 }

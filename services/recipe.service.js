@@ -103,11 +103,31 @@ async function searchRecipeByName(name) {
   }
 }
 
+async function filterRecipeByRecipe(ingredients) {
+  try {
+    let joinedRecipes = await recipeAccessor.joinRecipeByIngredients();
+    if (joinedRecipes === undefined || joinedRecipes.length == 0) {
+      return ResponseObject(400, "No Recipe Found");
+    }
+    else {
+      console.log(joinedRecipes.length);
+      return ResponseObject(200, "Recipes Found", { joinedRecipes });
+    }
+
+  }
+  catch (e) {
+    console.log(e);
+    return ResponseObject(500);
+  }
+
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
   deleteRecipe,
-  searchRecipeByName
+  searchRecipeByName,
+  filterRecipeByRecipe
 }
 
 

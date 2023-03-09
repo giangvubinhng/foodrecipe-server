@@ -19,7 +19,8 @@ const QUERIES = Object.freeze({
   insert: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
   delete: `DELETE FROM Recipe WHERE id = ?`,
   findbyid: `SELECT * FROM Recipe WHERE id = ?`,
-  findByName: `SELECT * FROM Recipe WHERE name LIKE ?`
+  findByName: `SELECT * FROM Recipe WHERE name LIKE ?`,
+  joinRecipeByIngredients: `SELECT r.id, r.name, r.cuisine, r.created_at, r.updated_at, r.instruction, i.name AS ingredientName FROM Recipe r JOIN Ingredient_Recipe_Junction j ON j.recipe_id = r.id JOIN Ingredient i ON j.ingredient_id = i.id`
 })
 
 async function countPublic() {
@@ -47,11 +48,16 @@ async function findByName(name) {
   return await db.executeQuery(QUERIES.findByName, [name]);
 }
 
+async function joinRecipeByIngredients() {
+  return await db.executeQuery(QUERIES.joinRecipeByIngredients);
+}
+
 module.exports = {
   countPublic,
   getPublicRecipes,
   insert,
   deleteRecipe,
   findById,
-  findByName
+  findByName,
+  joinRecipeByIngredients
 }
