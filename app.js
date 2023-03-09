@@ -1,3 +1,4 @@
+const rateLimit = require("express-rate-limit")
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -11,7 +12,11 @@ const recipeRouter = require('./routes/recipes')
 
 const app = express();
 
+// Enable when we set up a reverse proxy (Nginx)
+// source https://expressjs.com/en/guide/behind-proxies.html
+// app.set('trust proxy', 1);
 // view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -24,6 +29,14 @@ app.use(cors({
   credentials: true
 }))
 app.use(express.static(path.join(__dirname, 'public')));
+
+const limiter = rateLimit({
+	windowMs: 1000, // 1 second
+	max: 1, // limit each IP to 1 requests per windowMs
+})
+
+//  apply to all requests
+app.use(limiter)
 
 app.use('/api', indexRouter);
 app.use('/api/users', usersRouter);

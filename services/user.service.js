@@ -38,13 +38,14 @@ async function login(userLoginRequestObject){
       return ResponseObject(400, "Incorrect username or password")
 
     // assign token and send back to client
-    const token = jwt.sign({
+    const userObj = {
       email: user.email,
       firstName: user.first_name,
       lastName: user.last_name
-    }, process.env.FR_JWT_TOKEN || 'justexample');
+    }
+    const token = jwt.sign(userObj, process.env.FR_JWT_TOKEN || 'justexample');
 
-    return ResponseObject(200, undefined, {token} );
+    return ResponseObject(200, undefined, {token, user: {...userObj, isLoggedIn: true}} );
   }
   catch(e){
     console.log(e)
@@ -55,5 +56,5 @@ async function login(userLoginRequestObject){
 
 module.exports = {
   register,
-  login
+  login,
 }

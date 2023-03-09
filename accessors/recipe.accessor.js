@@ -14,21 +14,52 @@ var db = require('../models/db');
       FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE
   */
 const QUERIES = Object.freeze({
-  countPublic: `SELECT COUNT(*) as itemsCount from Recipe Where is_public = 2`,
-  publicRecipes: `SELECT * from Recipe Where is_public = 2 ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  countPublic: `SELECT COUNT(*) as itemsCount FROM Recipe Where is_public = 2`,
+  countUserRecipes: `SELECT COUNT(*) as itemsCount FROM Recipe Where user_id = ?`,
+  countUserRecipesLimit: `SELECT COUNT(*) as itemsCount FROM Recipe Where user_id = ? AND is_public = 2`,
+  countWaitList: `SELECT COUNT(*) as itemsCount FROM Recipe Where is_public = 1`,
+  publicRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where is_public = 2 
+                    ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   insert: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
   delete: `DELETE FROM Recipe WHERE id = ?`,
-  findbyid: `SELECT * FROM Recipe WHERE id = ?`,
   findByName: `SELECT * FROM Recipe WHERE name LIKE ?`,
-  joinRecipeByIngredients: `SELECT r.id, r.name, r.cuisine, r.created_at, r.updated_at, r.instruction, i.name AS ingredientName FROM Recipe r JOIN Ingredient_Recipe_Junction j ON j.recipe_id = r.id JOIN Ingredient i ON j.ingredient_id = i.id`
+  joinRecipeByIngredients: `SELECT r.id, r.name, r.cuisine, r.created_at, r.updated_at, r.instruction, i.name AS ingredientName FROM Recipe r JOIN Ingredient_Recipe_Junction j ON j.recipe_id = r.id JOIN Ingredient i ON j.ingredient_id = i.id`,
+  findById: `SELECT * FROM Recipe WHERE id = ? LIMIT 1`,
+  userRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where user_id = ? 
+              ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  userRecipesLimit: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where user_id = ? and is_public = 2 
+              ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  waitListedRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where is_public = 1 
+                    ORDER BY created_at DESC LIMIT ? OFFSET ?`,
 })
 
 async function countPublic() {
   return await db.executeQuery(QUERIES.countPublic);
 }
 
+async function countWaitListedRecipes() {
+  return await db.executeQuery(QUERIES.countWaitList);
+}
+
+async function countUserRecipes(userId) {
+  return await db.executeQuery(QUERIES.countUserRecipes, [userId]);
+}
+async function countUserRecipesLimit(userId) {
+  return await db.executeQuery(QUERIES.countUserRecipesLimit, [userId]);
+}
+
 async function getPublicRecipes(limit, offset) {
   return await db.executeQuery(QUERIES.publicRecipes, [limit, offset]);
+}
+async function getUserRecipes(userId, limit, offset) {
+  return await db.executeQuery(QUERIES.userRecipes, [userId, limit, offset]);
+}
+
+async function getUserRecipesLimit(userId, limit, offset) {
+  return await db.executeQuery(QUERIES.userRecipesLimit, [userId, limit, offset]);
+}
+async function getWaitListedRecipes(limit, offset) {
+  return await db.executeQuery(QUERIES.waitListedRecipes, [limit, offset]);
 }
 
 async function insert(name, cuisine, instruction, userId) {
@@ -37,7 +68,7 @@ async function insert(name, cuisine, instruction, userId) {
 
 //findbyid function -> take recipeId 
 async function findById(recipeId) {
-  return await db.executeQuery(QUERIES.findbyid, [recipeId])
+  return await db.executeQuery(QUERIES.findById, [recipeId])
 }
 
 async function deleteRecipe(recipeId) {
@@ -58,6 +89,12 @@ module.exports = {
   insert,
   deleteRecipe,
   findById,
-  findByName,
-  joinRecipeByIngredients
+  getUserRecipes,
+  getWaitListedRecipes,
+  countUserRecipes,
+  countWaitListedRecipes,
+  countUserRecipesLimit,
+  getUserRecipesLimit,
+  joinRecipeByIngredients,
+  findByName
 }

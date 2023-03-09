@@ -14,11 +14,16 @@ var db = require('../models/db');
   */
 const QUERIES = Object.freeze({
   insert: `INSERT INTO User (email, password, first_name, last_name) VALUES (?, ?, ?, ?)`,
-  findByEmail: `SELECT * FROM User WHERE email = ?`
+  findByEmail: `SELECT * FROM User WHERE email = ?`,
+  findById: `SELECT * FROM User WHERE id = ?`
 })
 
 async function findByEmail(email) {
   return await db.executeQuery(QUERIES.findByEmail, [email])
+}
+
+async function findById(id){
+    return await db.executeQuery(QUERIES.findById, [id])
 }
 
 async function insert(email, hashPassword, firstName, lastName) {
@@ -29,5 +34,6 @@ async function insert(email, hashPassword, firstName, lastName) {
 
 module.exports = {
   insert,
-  findByEmail
+  findByEmail,
+  findById
 }
