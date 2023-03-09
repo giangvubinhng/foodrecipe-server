@@ -186,13 +186,36 @@ async function getRecipesList(promises) {
   }
 }
 
+// TODO: handle if recipe or user doesn't exist and try to favorite?
+async function addFavRecipe(recipeId, user) {
+  // use countIfExists to make sure it returns 0 (recipe not yet favorited)
+  const favStatus = await userFavoriteAccessor.countIfExists(user.id, recipeId); // possible type error
+  // if 0, insert into relational table
+  if (favStatus == 0) {
+    // insert into relational table
+    const addition = await userFavoriteAccessor.addFavRecipe(user.id, recipeId);
+    // TODO: figure out how to check for errors from attempting to insert into table
+    return ResponseObject(200, undefined, undefined);
+  }
+  // if 1, error out
+  return ResponseObject(400)
+}
+
+async function delFavRecipe(recipeId, user) {
+  // use countIfExists to make sure it returns 1 (recipe is favorited)
+  // if 1, remove from relational table
+  // if 0, error out
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
   deleteRecipe,
   getRecipeById,
   getUserRecipes,
-  getWaitListedRecipes
+  getWaitListedRecipes,
+  addFavRecipe,
+  delFavRecipe
 }
 
 
