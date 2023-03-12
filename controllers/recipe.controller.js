@@ -48,9 +48,10 @@ async function searchRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
-async function filterRecipeByRecipe(req, res) {
+async function filterRecipeByIngredient(req, res) {
+
   const ingredients = req.query.ingredients;
-  const action = await recipeService.filterRecipeByRecipe(ingredients);
+  const action = await recipeService.filterRecipeByIngredient(ingredients);
   return res.status(action.status).json(action.result);
 }
 
@@ -59,7 +60,7 @@ module.exports = {
   createRecipe,
   deleteRecipe,
   searchRecipe,
-  filterRecipeByRecipe,
+  filterRecipeByIngredient,
   getWaitListedRecipes,
   getUserRecipes,
   getRecipe

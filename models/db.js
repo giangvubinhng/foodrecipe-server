@@ -12,11 +12,9 @@ const pool = mariadb.createPool({
 
 async function executeQuery(query, values) {
   let connection;
-  console.log(query);
   try {
     connection = await pool.getConnection();
     const result = await connection.query(query, values)
-    console.log(result);
     return result;
   }
   catch (e) {
@@ -56,12 +54,12 @@ async function executeTransaction(transactionLogic, retries = 0) {
 }
 
 async function executeDynamicQuery(baseQuery, extras, values) {
-    let query = baseQuery;
-    extras.forEach((ex) => {
-      query += ex
-    })
-    const result = await connection.query(query, values)
-    return result;
+  let query = baseQuery;
+  extras.forEach((ex) => {
+    query += ex
+  })
+  const result = await connection.query(query, values)
+  return result;
 }
 
 module.exports = { executeQuery, executeTransaction, executeDynamicQuery };

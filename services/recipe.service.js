@@ -118,38 +118,6 @@ async function deleteRecipe(id, user) {
   }
 }
 
-async function searchRecipeByName(name) {
-  const recipeName = '%' + name + '%';
-  try {
-    const recipes = await recipeAccessor.findByName(recipeName);
-    if (recipes === undefined || recipes.length == 0) {
-      return ResponseObject(400, "Recipe Not Found");
-    }
-    else {
-      return ResponseObject(200, "Recipes Found", { recipes });
-    }
-  } catch (e) {
-    console.log(e);
-    return ResponseObject(500);
-  }
-}
-
-async function filterRecipeByRecipe(ingredients) {
-  try {
-    let joinedRecipes = await recipeAccessor.joinRecipeByIngredients();
-    if (joinedRecipes === undefined || joinedRecipes.length == 0) {
-      return ResponseObject(400, "No Recipe Found");
-    }
-    else {
-      console.log(joinedRecipes.length);
-      return ResponseObject(200, "Recipes Found", { joinedRecipes });
-    }
-
-  }
-  catch (e) {
-    console.log(e);
-  }
-}
 async function getRecipeById(recipeId, user) {
   try {
     const recipes = await recipeAccessor.findById(recipeId);
@@ -194,6 +162,46 @@ async function mapDetailedRecipeObject(recipe, user) {
 
 }
 
+async function searchRecipeByName(name) {
+  const recipeName = '%' + name + '%';
+  try {
+    const recipes = await recipeAccessor.findByName(recipeName);
+    if (recipes.length < 1) {
+      return ResponseObject(400, "Recipe Not Found");
+    }
+    const result = await Promise.all(recipes.map(async (recipe) => { return await mapDetailedRecipeObject(recipe); }));
+    return ResponseObject(200, "Recipes Found", { result });
+  } catch (e) {
+    console.log(e);
+    return ResponseObject(500);
+  }
+}
+
+async function filterRecipeByIngredient(ingredient) {
+  try {
+    const ingredientList = ingredient.split(", ");
+    let recipes = await recipeAccessor.findAllRecipe();
+    if (recipes.length < 1) {
+      return ResponseObject(400, "No Recipe Found");
+    }
+    recipes = await Promise.all(recipes.map(async (recipe) => { return await mapDetailedRecipeObject(recipe); }));
+    const filteredRecipes = recipes.filter(recipe => {
+      return recipe.ingredients.some(ingredient => {
+        return ingredientList.includes(ingredient.name);
+      });
+    });
+
+    if (filteredRecipes.length < 1) {
+      return ResponseObject(400, "No Recipe Found");
+    }
+    return ResponseObject(200, "Recipes Found", { filteredRecipes });
+
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+
 async function getRecipesList(promises) {
 
   try {
@@ -218,18 +226,14 @@ async function getRecipesList(promises) {
   }
 }
 
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
   deleteRecipe,
-  searchRecipeByName,
-  filterRecipeByRecipe,
   getRecipeById,
   getUserRecipes,
-  getWaitListedRecipes
-};
-
-
-
-
-
+  getWaitListedRecipes,
+  searchRecipeByName,
+  filterRecipeByIngredient
+}
