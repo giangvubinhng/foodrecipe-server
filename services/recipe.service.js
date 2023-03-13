@@ -24,7 +24,7 @@ async function getPublicRecipes(page) {
   const itemsPromise = recipeAccessor.getPublicRecipes(ITEMS_PER_PAGE, offset);
 
   const promises = [countPromise, itemsPromise]
-  return getRecipesList(promises)
+  return await getRecipesList(promises)
 
 }
 
@@ -40,7 +40,7 @@ async function getWaitListedRecipes(page) {
   const itemsPromise = recipeAccessor.getWaitListedRecipes(ITEMS_PER_PAGE, offset);
 
   const promises = [countPromise, itemsPromise]
-  return getRecipesList(promises)
+  return await getRecipesList(promises)
 
 }
 
@@ -66,7 +66,7 @@ async function getUserRecipes(author_id, user, page) {
 
 
   const promises = [countPromise, itemsPromise]
-  return getRecipesList(promises)
+  return await getRecipesList(promises)
 
 }
 
