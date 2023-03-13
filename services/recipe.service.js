@@ -137,6 +137,12 @@ async function getRecipeById(recipeId, user) {
 
 }
 
+async function filterByRecipes(ingredients){
+  const ingredientsList = ingredients.split(", ").map(ing => `%${ing}%` );
+  const conds = new Array(ingredientsList.length).fill("name LIKE ?");
+  const ingrIds = await ingredientAccessor.filterByRecipes(conds, ingredientsList);
+}
+
 async function mapDetailedRecipeObject(recipe, user) {
 
   const ingredientsPromise = ingredientAccessor.getIngredients(recipe.id);

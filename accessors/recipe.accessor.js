@@ -14,10 +14,10 @@ var db = require('../models/db');
       FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE
   */
 const QUERIES = Object.freeze({
-  countPublic: `SELECT COUNT(*) as itemsCount FROM Recipe Where is_public = 2`,
-  countUserRecipes: `SELECT COUNT(*) as itemsCount FROM Recipe Where user_id = ?`,
-  countUserRecipesLimit: `SELECT COUNT(*) as itemsCount FROM Recipe Where user_id = ? AND is_public = 2`,
-  countWaitList: `SELECT COUNT(*) as itemsCount FROM Recipe Where is_public = 1`,
+  countPublic: `SELECT COUNT(id) as itemsCount FROM Recipe Where is_public = 2`,
+  countUserRecipes: `SELECT COUNT(id) as itemsCount FROM Recipe Where user_id = ?`,
+  countUserRecipesLimit: `SELECT COUNT(id) as itemsCount FROM Recipe Where user_id = ? AND is_public = 2`,
+  countWaitList: `SELECT COUNT(id) as itemsCount FROM Recipe Where is_public = 1`,
   publicRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where is_public = 2 
                     ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   insert: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
@@ -29,6 +29,16 @@ const QUERIES = Object.freeze({
               ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   waitListedRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where is_public = 1 
                     ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  countFindByIngredients: `SELECT count (DISTINCT r.id) as itemsCount
+                      FROM Recipe r
+                      INNER JOIN Ingredient_Recipe_Junction ir ON r.id = ir.recipe_id
+                      WHERE ir.ingredient_id IN ?;
+                      `,
+  findByIngredients: `SELECT DISTINCT r.id, r.name, r.cuisine, r.updated_at, r.user_id
+                      FROM Recipe r
+                      INNER JOIN Ingredient_Recipe_Junction ir ON r.id = ir.recipe_id
+                      WHERE ir.ingredient_id IN ?;
+                      `
 })
 
 async function countPublic() {
