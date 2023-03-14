@@ -186,13 +186,51 @@ async function getRecipesList(promises) {
   }
 }
 
+async function addFavRecipe(recipeId, user) {
+  // use checkIfFavorited to make sure it returns 0 (recipe not yet favorited)
+  const favStatus = await userFavoriteAccessor.checkIfFavorited(user.id, recipeId);
+  // if 0, insert into relational table
+  if (favStatus["length"] == 0) {
+    // insert into relational table
+    const addition = await userFavoriteAccessor.addFavRecipe(user.id, Number(recipeId));
+    if (addition["warningStatus"] != 0) {
+      return ResponseObject(500, undefined, undefined);
+    }
+    else {
+      return ResponseObject(200, undefined, undefined);
+    }
+  }
+  // if 1, error out
+  return ResponseObject(400)
+}
+
+async function delFavRecipe(recipeId, user) {
+  // use checkIfFavorited to make sure it returns 1 (recipe is favorited)
+  const favStatus = await userFavoriteAccessor.checkIfFavorited(user.id, recipeId);
+  // if 1, remove from relational table
+  if (favStatus["length"] == 1) {
+    // delete from relational table
+    const deletion = await  userFavoriteAccessor.delFavRecipe(user.id, Number(recipeId));
+    if (deletion["warningStatus"] != 0) {
+      return ResponseObject(500, undefined, undefined);
+    }
+    else {
+      return ResponseObject(200, undefined, undefined);
+    }
+  }
+  // if 0, error out
+  return ResponseObject(400)
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
   deleteRecipe,
   getRecipeById,
   getUserRecipes,
-  getWaitListedRecipes
+  getWaitListedRecipes,
+  addFavRecipe,
+  delFavRecipe
 }
 
 

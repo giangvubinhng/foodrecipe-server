@@ -1,3 +1,4 @@
+const { executeTransaction } = require('../models/db');
 const userService = require('../services/user.service');
 
 async function register(req, res) {

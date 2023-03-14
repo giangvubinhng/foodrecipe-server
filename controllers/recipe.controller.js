@@ -42,12 +42,28 @@ async function deleteRecipe(req, res) {
   return res.status(action.status).json(action.result);
 }
 
+async function addFavRecipe(req, res) {
+  const recipeId = req.params.rid;
+  const user = req.user;
+  const action = await recipeService.addFavRecipe(recipeId, user);
+  return res.status(action.status).json(action.result);
+}
+
+async function delFavRecipe(req, res) {
+  const recipeId = req.params.rid;
+  const user = req.user;
+  const action = await recipeService.delFavRecipe(recipeId, user);
+  return res.status(action.status).json(action.result);
+}
+
 module.exports = {
   getPublicRecipes,
   createRecipe,
   deleteRecipe,
   getWaitListedRecipes,
   getUserRecipes,
-  getRecipe
+  getRecipe,
+  addFavRecipe,
+  delFavRecipe
 
 }
