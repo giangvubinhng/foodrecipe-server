@@ -186,25 +186,40 @@ async function getRecipesList(promises) {
   }
 }
 
-// TODO: handle if recipe or user doesn't exist and try to favorite?
 async function addFavRecipe(recipeId, user) {
-  // use countIfExists to make sure it returns 0 (recipe not yet favorited)
-  const favStatus = await userFavoriteAccessor.countIfExists(user.id, recipeId); // possible type error
+  // use checkIfFavorited to make sure it returns 0 (recipe not yet favorited)
+  const favStatus = await userFavoriteAccessor.checkIfFavorited(user.id, recipeId);
   // if 0, insert into relational table
-  if (favStatus == 0) {
+  if (favStatus["length"] == 0) {
     // insert into relational table
-    const addition = await userFavoriteAccessor.addFavRecipe(user.id, recipeId);
-    // TODO: figure out how to check for errors from attempting to insert into table
-    return ResponseObject(200, undefined, undefined);
+    const addition = await userFavoriteAccessor.addFavRecipe(user.id, Number(recipeId));
+    if (addition["warningStatus"] != 0) {
+      return ResponseObject(500, undefined, undefined);
+    }
+    else {
+      return ResponseObject(200, undefined, undefined);
+    }
   }
   // if 1, error out
   return ResponseObject(400)
 }
 
 async function delFavRecipe(recipeId, user) {
-  // use countIfExists to make sure it returns 1 (recipe is favorited)
+  // use checkIfFavorited to make sure it returns 1 (recipe is favorited)
+  const favStatus = await userFavoriteAccessor.checkIfFavorited(user.id, recipeId);
   // if 1, remove from relational table
+  if (favStatus["length"] == 1) {
+    // delete from relational table
+    const deletion = await  userFavoriteAccessor.delFavRecipe(user.id, Number(recipeId));
+    if (deletion["warningStatus"] != 0) {
+      return ResponseObject(500, undefined, undefined);
+    }
+    else {
+      return ResponseObject(200, undefined, undefined);
+    }
+  }
   // if 0, error out
+  return ResponseObject(400)
 }
 
 module.exports = {
