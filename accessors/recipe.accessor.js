@@ -32,12 +32,12 @@ const QUERIES = Object.freeze({
   countFindByIngredients: `SELECT count (DISTINCT r.id) as itemsCount
                       FROM Recipe r
                       INNER JOIN Ingredient_Recipe_Junction ir ON r.id = ir.recipe_id
-                      WHERE ir.ingredient_id IN ?;
+                      WHERE ir.ingredient_id IN ?
                       `,
   findByIngredients: `SELECT DISTINCT r.id, r.name, r.cuisine, r.updated_at, r.user_id
                       FROM Recipe r
                       INNER JOIN Ingredient_Recipe_Junction ir ON r.id = ir.recipe_id
-                      WHERE ir.ingredient_id IN ?;
+                      WHERE ir.ingredient_id IN ? ORDER BY r.updated_at LIMIT ? OFFSET ?
                       `
 })
 
@@ -54,6 +54,9 @@ async function countUserRecipes(userId) {
 }
 async function countUserRecipesLimit(userId) {
   return await db.executeQuery(QUERIES.countUserRecipesLimit, [userId]);
+}
+async function countFindByIngredients(ingrIds){
+  return await db.executeQuery(QUERIES.countFindByIngredients, [ingrIds])
 }
 
 async function getPublicRecipes(limit, offset) {
@@ -78,6 +81,9 @@ async function insert(name, cuisine, instruction, userId) {
 async function findById(recipeId) {
   return await db.executeQuery(QUERIES.findById, [recipeId])
 }
+async function findByIngredients(ingrIds, limit, offset){
+  return await db.executeQuery(QUERIES.findByIngredients, [ingrIds, limit, offset])
+}
 
 async function deleteRecipe(recipeId) {
   return await db.executeQuery(QUERIES.delete, [recipeId])
@@ -94,5 +100,7 @@ module.exports = {
   countUserRecipes,
   countWaitListedRecipes,
   countUserRecipesLimit,
-  getUserRecipesLimit
+  getUserRecipesLimit,
+  countFindByIngredients,
+  findByIngredients
 }

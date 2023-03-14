@@ -136,11 +136,28 @@ async function getRecipeById(recipeId, user) {
   }
 
 }
+async function filterPublicRecipesByIngredients(ingredients){
+    const ingrIds = filterByIngredients(ingredients);
+    if (isNaN(page) || page < 1)
+      page = 1
 
-async function filterByRecipes(ingredients){
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+
+    const countPromise = recipeAccessor.countFindByIngredients(ingrIds);
+
+    const itemsPromise = recipeAccessor.findByIngredients(ITEMS_PER_PAGE, offset);
+
+    const promises = [countPromise, itemsPromise]
+    return await getRecipesList(promises)
+    
+
+}
+
+async function filterByIngredients(ingredients){
+
   const ingredientsList = ingredients.split(", ").map(ing => `%${ing}%` );
   const conds = new Array(ingredientsList.length).fill("name LIKE ?");
-  const ingrIds = await ingredientAccessor.filterByRecipes(conds, ingredientsList);
+  return await ingredientAccessor.filterByIngredients(conds, ingredientsList);
 }
 
 async function mapDetailedRecipeObject(recipe, user) {
@@ -198,7 +215,8 @@ module.exports = {
   deleteRecipe,
   getRecipeById,
   getUserRecipes,
-  getWaitListedRecipes
+  getWaitListedRecipes,
+  filterPublicRecipesByIngredients
 }
 
 

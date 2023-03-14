@@ -16,7 +16,7 @@ async function getIngredients(recipeId) {
   return await db.executeQuery(QUERIES.get, [recipeId])
 }
 
-async function filterByRecipes(extra, values){
+async function filterByIngredients(extra, values){
   return await db.executeDynamicQuery(QUERIES.find, extra, values)
 
 }
@@ -25,5 +25,5 @@ async function filterByRecipes(extra, values){
 module.exports = {
   insert,
   getIngredients,
-  filterByRecipes
+  filterByIngredients
 }
