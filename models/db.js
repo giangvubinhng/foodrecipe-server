@@ -54,12 +54,12 @@ async function executeTransaction(transactionLogic, retries = 0) {
 }
 
 async function executeDynamicQuery(baseQuery, extras, values) {
-    let query = baseQuery;
-    extras.forEach((ex) => {
-      query += ex
-    })
-    const result = await connection.query(query, values)
-    return result;
+  let query = baseQuery;
+  extras.forEach((ex) => {
+    query += ex
+  })
+  const result = await connection.query(query, values)
+  return result;
 }
 
 module.exports = { executeQuery, executeTransaction, executeDynamicQuery };

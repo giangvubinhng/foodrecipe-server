@@ -22,6 +22,7 @@ const QUERIES = Object.freeze({
                     ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   insert: `INSERT INTO Recipe (name, cuisine, instruction, user_id) VALUES (?, ?, ?, ?)`,
   delete: `DELETE FROM Recipe WHERE id = ?`,
+  findByName: `SELECT * FROM Recipe WHERE name LIKE ?`,
   findById: `SELECT * FROM Recipe WHERE id = ? LIMIT 1`,
   userRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where user_id = ? 
               ORDER BY created_at DESC LIMIT ? OFFSET ?`,
@@ -29,6 +30,7 @@ const QUERIES = Object.freeze({
               ORDER BY created_at DESC LIMIT ? OFFSET ?`,
   waitListedRecipes: `SELECT id, name, cuisine, updated_at, user_id FROM Recipe Where is_public = 1 
                     ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+  findAllRecipe: `SELECT * FROM Recipe`
 })
 
 async function countPublic() {
@@ -73,6 +75,14 @@ async function deleteRecipe(recipeId) {
   return await db.executeQuery(QUERIES.delete, [recipeId])
 }
 
+async function findByName(name) {
+  return await db.executeQuery(QUERIES.findByName, [name]);
+}
+
+async function findAllRecipe() {
+  return await db.executeQuery(QUERIES.findAllRecipe);
+}
+
 module.exports = {
   countPublic,
   getPublicRecipes,
@@ -84,5 +94,7 @@ module.exports = {
   countUserRecipes,
   countWaitListedRecipes,
   countUserRecipesLimit,
-  getUserRecipesLimit
+  getUserRecipesLimit,
+  findByName,
+  findAllRecipe
 }
